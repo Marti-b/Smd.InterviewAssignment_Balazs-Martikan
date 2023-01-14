@@ -6,7 +6,7 @@ using Smd.InterviewAssignment.WebApi.Entities;
 
 namespace Smd.InterviewAssignment.WebApi.Data
 {
-    public static class DbInitialiazer
+    public static class DbInitializer
     {
         public static void Initialize(BookContext context)
         {
