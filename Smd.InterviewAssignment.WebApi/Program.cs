@@ -1,11 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using Smd.InterviewAssignment.WebApi.Data;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace Smd.InterviewAssignment.WebApi
 {
@@ -13,8 +12,22 @@ namespace Smd.InterviewAssignment.WebApi
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
-        }
+           var host = CreateHostBuilder(args).Build();
+           using var scope = host.Services.CreateScope();
+           var context = scope.ServiceProvider.GetRequiredService<BookContext>();
+           var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+           try
+           {
+               context.Database.Migrate();
+               DbInitialiazer.Initialize(context);
+           }
+           catch (Exception ex)
+           {
+                logger.LogError(ex, "Problem with migrating data");
+           }
+
+           host.Run();
+        }    
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
