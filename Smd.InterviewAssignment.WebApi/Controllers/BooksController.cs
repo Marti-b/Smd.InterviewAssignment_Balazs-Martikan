@@ -33,18 +33,61 @@ namespace Smd.InterviewAssignment.WebApi.Controllers
 
         [HttpGet]
         [Route("{id}")]
-        public async Task<ActionResult<Book>> Get(int id)
+        public async Task<ActionResult<Book>> GetBookById(int id)
         {
             var book = await _bookContext.Books.FindAsync(id);
             if (book == null)
             {
-                _logger.LogError("Book not found");
+                _logger.LogError("Book is not found");
                 return NotFound("The requested book is not found");
             }
 
             return Ok(book);
         }
 
+        [HttpPost]
+        
+        public async Task<ActionResult> CreateBook(Book book)
+        {
+            if (ModelState.IsValid)
+            {
+                _bookContext.Books.Add(book);
+                await _bookContext.SaveChangesAsync();
+            }
+            var newBook = await _bookContext.Books.FindAsync(book.Id);
+            return Created("/", newBook);
+        }
+
+        [HttpPut]
+        public async Task<ActionResult> UpdateBook(Book book)
+        {
+            if (ModelState.IsValid)
+		    {
+                var bookToUpdate = await _bookContext.Books.FindAsync(book.Id);
+		        bookToUpdate.Title = book.Title;
+		        bookToUpdate.Author = book.Author;
+		        await _bookContext.SaveChangesAsync();
+            }
+
+            return Ok(await _bookContext.Books.ToListAsync());
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteBook(int id)
+        {
+            var book = await _bookContext.Books.FindAsync(id);
+            if ( book != null)
+            {
+                _bookContext.Books.Remove(book);
+                await _bookContext.SaveChangesAsync();
+                
+                return Ok(await _bookContext.Books.ToListAsync());
+            }
+
+            _logger.LogError("Book is not found");
+            return NotFound("The requested book is not found");
+        }
+        
         [HttpGet]
         [Route("mail")]
         public void Mail(string recipient)

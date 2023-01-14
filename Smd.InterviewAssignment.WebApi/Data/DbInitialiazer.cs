@@ -11,10 +11,8 @@ namespace Smd.InterviewAssignment.WebApi.Data
         public static void Initialize(BookContext context)
         {
             if (context.Books.Any())
-            {
                 return;
-            }
-
+            
             var books = new List<Book>()
             {
                 new Book {Id = 1, Title = "Moby Dick", Author = "Herman Melville"},
