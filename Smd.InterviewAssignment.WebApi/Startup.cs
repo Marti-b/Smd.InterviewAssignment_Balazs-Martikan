@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Smd.InterviewAssignment.WebApi.Data;
 
 namespace Smd.InterviewAssignment.WebApi
 {
@@ -19,6 +21,10 @@ namespace Smd.InterviewAssignment.WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddDbContext<BookContext>( opt => 
+            {
+                opt.UseSqlite(Configuration.GetConnectionString("DefaultConnection"));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
