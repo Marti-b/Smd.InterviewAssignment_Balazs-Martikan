@@ -1,7 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net.Mail;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Smd.InterviewAssignment.WebApi.Data;
+using Smd.InterviewAssignment.WebApi.Entities;
 
 namespace Smd.InterviewAssignment.WebApi.Controllers
 {
@@ -10,37 +13,35 @@ namespace Smd.InterviewAssignment.WebApi.Controllers
     public class BooksController : ControllerBase
     {
         private readonly ILogger<BooksController> _logger;
+        private readonly BookContext _bookContext;
 
-        public BooksController(ILogger<BooksController> logger)
+        public BooksController(ILogger<BooksController> logger, BookContext bookContext)
         {
             _logger = logger;
+            _bookContext = bookContext;
         }
 
         [HttpGet]
-        public IEnumerable<dynamic> Get()
+        public ActionResult<List<Book>> Get()
         {
-            return new dynamic[4]
-            {
-                new {id = 1, title = "Moby Dick", author = "Herman Melville"},
-                new {id = 2, title = "Ulysses", author = "James Joyce"},
-                new {id = 3, tilte = "The Great Gatsby", author = "Fitz"},
-                new {id = 4, title = "War and Peace", author = "Leo Tolstoy"}
-            };
+            var books = _bookContext.Books.ToList();
+
+            return Ok(books);
         }
 
         [HttpGet]
         [Route("{id}")]
-        public object Get(int id)
+        public ActionResult<Book> Get(int id)
         {
-            foreach (var book in Get())
+            
+            var book = _bookContext.Books.Find(id);
+            if (book == null)
             {
-                if (book.id == id)
-                {
-                    return book;
-                }
+                _logger.LogError("Book not found");
+                return NotFound("The requested book is not found");
             }
 
-            return null;
+            return Ok(book);
         }
 
         [HttpGet]
