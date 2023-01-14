@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Smd.InterviewAssignment.WebApi.Data;
 using Smd.InterviewAssignment.WebApi.Entities;
@@ -22,19 +24,18 @@ namespace Smd.InterviewAssignment.WebApi.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<Book>> Get()
+        public async Task<ActionResult<List<Book>>> GetBooks()
         {
-            var books = _bookContext.Books.ToList();
+            var books = await _bookContext.Books.ToListAsync();
 
             return Ok(books);
         }
 
         [HttpGet]
         [Route("{id}")]
-        public ActionResult<Book> Get(int id)
+        public async Task<ActionResult<Book>> Get(int id)
         {
-            
-            var book = _bookContext.Books.Find(id);
+            var book = await _bookContext.Books.FindAsync(id);
             if (book == null)
             {
                 _logger.LogError("Book not found");
