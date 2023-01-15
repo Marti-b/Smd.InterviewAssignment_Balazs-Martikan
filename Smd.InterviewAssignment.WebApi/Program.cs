@@ -19,7 +19,7 @@ namespace Smd.InterviewAssignment.WebApi
            try
            {
                context.Database.Migrate();
-               DbInitialiazer.Initialize(context);
+               DbInitializer.Initialize(context);
            }
            catch (Exception ex)
            {

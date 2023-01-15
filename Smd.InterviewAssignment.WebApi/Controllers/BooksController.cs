@@ -67,9 +67,10 @@ namespace Smd.InterviewAssignment.WebApi.Controllers
 		        bookToUpdate.Title = book.Title;
 		        bookToUpdate.Author = book.Author;
 		        await _bookContext.SaveChangesAsync();
+                return Ok(await _bookContext.Books.ToListAsync());
             }
 
-            return Ok(await _bookContext.Books.ToListAsync());
+            return BadRequest();
         }
 
         [HttpDelete]
@@ -88,6 +89,24 @@ namespace Smd.InterviewAssignment.WebApi.Controllers
             return NotFound("The requested book is not found");
         }
         
+        [HttpPut]
+        [Route("{id}/read")]
+        public async Task<ActionResult> MakeBookRead(int id)
+        {
+            var bookToUpdate = await _bookContext.Books.FindAsync(id);
+            if (bookToUpdate == null)
+                return NotFound("Book was not found");
+
+            if (!ModelState.IsValid)
+            {
+                bookToUpdate.IsRead = true;
+                await _bookContext.SaveChangesAsync();
+                return Ok(bookToUpdate);
+            }
+
+            return BadRequest("Book cannot be updated. Please check if the book parameters are correct");
+        }
+
         [HttpGet]
         [Route("mail")]
         public void Mail(string recipient)
