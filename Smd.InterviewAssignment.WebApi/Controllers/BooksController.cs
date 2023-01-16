@@ -1,10 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Net.Mail;
+using System.Text.Json;
+//using System.Net.Mail;
+using MailKit.Net.Smtp;
 using System.Threading.Tasks;
+using MailKit.Security;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using MimeKit;
+using MimeKit.Text;
 using Smd.InterviewAssignment.WebApi.Data;
 using Smd.InterviewAssignment.WebApi.Entities;
 
@@ -55,6 +61,7 @@ namespace Smd.InterviewAssignment.WebApi.Controllers
                 await _bookContext.SaveChangesAsync();
             }
             var newBook = await _bookContext.Books.FindAsync(book.Id);
+            
             return Created("/", newBook);
         }
 
@@ -70,7 +77,7 @@ namespace Smd.InterviewAssignment.WebApi.Controllers
                 return Ok(await _bookContext.Books.ToListAsync());
             }
 
-            return BadRequest();
+            return BadRequest("Book cannot be updated. Please check if the book parameters are correct");
         }
 
         [HttpDelete]
@@ -97,23 +104,38 @@ namespace Smd.InterviewAssignment.WebApi.Controllers
             if (bookToUpdate == null)
                 return NotFound("Book was not found");
 
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 bookToUpdate.IsRead = true;
                 await _bookContext.SaveChangesAsync();
-                return Ok(bookToUpdate);
             }
-
-            return BadRequest("Book cannot be updated. Please check if the book parameters are correct");
+           
+            return Ok(bookToUpdate);
         }
 
-        [HttpGet]
+        // Emails sent can be seen at : https://ethereal.email/messages
+        // Login email:oleta.davis@ethereal.email; password:Bacq26PEvtnjVxxVwJ
+        [HttpPost]
         [Route("mail")]
         public void Mail(string recipient)
         {
-            var emailClient = new SmtpClient("host");
-            emailClient.Send("noreply@dba.dk", recipient, "New books today",
-                "Here is a list of new books: TODO");
+            var listOfBookObjects = _bookContext.Books.ToList();
+            string listOfBooks = JsonSerializer.Serialize(listOfBookObjects);
+            
+            var email = new MimeMessage();
+            email.From.Add(MailboxAddress.Parse("noreply@dba.dk"));
+            email.To.Add(MailboxAddress.Parse(recipient));
+            email.Subject = ("New books today");
+            email.Body = new TextPart(TextFormat.Text)
+            {
+                Text = $"Here is a list of new books: {listOfBooks}"
+            };
+            
+            using var smtp = new SmtpClient();
+            smtp.Connect("smtp.ethereal.email", 587, SecureSocketOptions.StartTls);
+            smtp.Authenticate("oleta.davis@ethereal.email", "Bacq26PEvtnjVxxVwJ");
+            smtp.Send(email);
+            smtp.Disconnect(true);
         }
     }
 }
