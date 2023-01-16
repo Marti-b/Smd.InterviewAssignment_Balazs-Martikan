@@ -13,12 +13,12 @@ namespace Smd.InterviewAssignment.WebApi.Data
             if (context.Books.Any())
                 return;
             
-            var books = new List<Book>()
+            var books = new List<Book>
             {
-                new Book {Id = 1, Title = "Moby Dick", Author = "Herman Melville"},
-                new Book {Id = 2, Title = "Ulysses", Author = "James Joyce"},
-                new Book {Id = 3, Title = "The Great Gatsby", Author = "Fitz"},
-                new Book {Id = 4, Title = "War and Peace", Author = "Leo Tolstoy"}
+                new() {Id = 1, Title = "Moby Dick", Author = "Herman Melville"},
+                new() {Id = 2, Title = "Ulysses", Author = "James Joyce"},
+                new() {Id = 3, Title = "The Great Gatsby", Author = "Fitz"},
+                new() {Id = 4, Title = "War and Peace", Author = "Leo Tolstoy"}
             };
 
             foreach (var book in books)
