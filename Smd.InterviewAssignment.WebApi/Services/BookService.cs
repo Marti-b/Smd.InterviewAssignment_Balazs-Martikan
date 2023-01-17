@@ -30,7 +30,7 @@ namespace Smd.InterviewAssignment.WebApi.Services
             return book ?? null;
         }
 
-        public async void AddNewBook(Book book)
+        public async void CreateNewBook(Book book)
         {
             _bookContext.Books.Add(book);
             await _bookContext.SaveChangesAsync();

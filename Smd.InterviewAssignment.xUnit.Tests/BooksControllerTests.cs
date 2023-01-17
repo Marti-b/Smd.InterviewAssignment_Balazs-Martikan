@@ -15,13 +15,13 @@ namespace Smd.InterviewAssignment.xUnit.Tests
     {
         private readonly Mock<ILogger> _loggerMock;
         private readonly Mock<IBookService> _bookServiceMock;
-        private readonly Mock<IMailService> _mailServiceMock;
+        private readonly Mock<IEmailService> _mailServiceMock;
 
         public BooksControllerTests()
         {
             _loggerMock = new Mock<ILogger>();
             _bookServiceMock = new Mock<IBookService>();
-            _mailServiceMock = new Mock<IMailService>();
+            _mailServiceMock = new Mock<IEmailService>();
         }
 
         [Fact]

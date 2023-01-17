@@ -13,13 +13,13 @@ namespace Smd.InterviewAssignment.WebApi.Controllers
     {
         private readonly ILogger<BooksController> _logger;
         private readonly IBookService _bookService;
-        private readonly IMailService _mailService;
+        private readonly IEmailService _emailService;
 
-        public BooksController(Logger<BooksController> logger, IBookService bookService, IMailService mailService)
+        public BooksController(Logger<BooksController> logger, IBookService bookService, IEmailService emailService)
         {
             _logger = logger;
             _bookService = bookService;
-            _mailService = mailService;
+            _emailService = emailService;
         }
 
         [HttpGet]
@@ -49,7 +49,7 @@ namespace Smd.InterviewAssignment.WebApi.Controllers
         {
             if (ModelState.IsValid)
             {
-               _bookService.AddNewBook(book);
+               _bookService.CreateNewBook(book);
             }
 
             return Created("/", _bookService.GetBookById(book.Id).Result);
@@ -102,7 +102,7 @@ namespace Smd.InterviewAssignment.WebApi.Controllers
         [Route("mail")]
         public void Mail(string recipient)
         {
-            _mailService.SendEmail(recipient);
+            _emailService.SendEmail(recipient);
         }
     }
 }

@@ -28,7 +28,7 @@ namespace Smd.InterviewAssignment.WebApi
                 opt.UseSqlite(Configuration.GetConnectionString("DefaultConnection"));
             });
             services.AddScoped<IBookService, BookService>();
-            services.AddScoped<IMailService, MailService>();
+            services.AddScoped<IEmailService, EmailService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

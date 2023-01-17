@@ -9,11 +9,11 @@ using Smd.InterviewAssignment.WebApi.Services.Interfaces;
 
 namespace Smd.InterviewAssignment.WebApi.Services;
 
-public class MailService : IMailService
+public class EmailService : IEmailService
 {
     private readonly BookContext _bookContext;
     
-    public MailService(BookContext bookContext)
+    public EmailService(BookContext bookContext)
     {
         _bookContext = bookContext;
     }
