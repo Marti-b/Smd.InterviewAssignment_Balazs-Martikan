@@ -15,7 +15,7 @@ namespace Smd.InterviewAssignment.WebApi.Controllers
         private readonly IBookService _bookService;
         private readonly IMailService _mailService;
 
-        public BooksController(ILogger<BooksController> logger, IBookService bookService, IMailService mailService)
+        public BooksController(Logger<BooksController> logger, IBookService bookService, IMailService mailService)
         {
             _logger = logger;
             _bookService = bookService;
@@ -36,7 +36,7 @@ namespace Smd.InterviewAssignment.WebApi.Controllers
             var book = await _bookService.GetBookById(id);
             if (book == null)
             {
-                _logger.LogError("Book is not found");
+                //_logger.LogError("Book is not found");
                 return NotFound("The requested book is not found");
             }
 
@@ -71,12 +71,12 @@ namespace Smd.InterviewAssignment.WebApi.Controllers
         public async Task<IActionResult> DeleteBook(int id)
         {
             _bookService.DeleteBook(id);
-            if (_bookService.GetBookById(id) == null)
+            if (_bookService.GetBookById(id).Result == null)
             {
                 return Ok(await _bookService.GetAllBooks());
             }
             
-            _logger.LogError("Book is not found");
+            //_logger.LogError("Book is not found");
             return NotFound("The requested book is not found");
         }
         
